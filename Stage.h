@@ -27,7 +27,7 @@ class Stage : public GameObject
     int select_;    //種類
     int controlID;  //コントロールのIDを取得
     int comboID;    //コンボのIDを取得
-    int notifficationCode;//通知コードを取得
+    int notificationCode;//通知コードを取得
     int setComboID;     //コンボIDをセット
 
 public:
