@@ -206,4 +206,19 @@ BOOL Stage::DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp)
 		return 0;
 	}
 	return FALSE;
+
+	
+
+}
+
+BOOL CALLBACK MENUProc(HWND hMenu, UINT msg, WPARAM wp, LPARAM lp)
+{
+	switch (msg)
+	{
+	case WM_INITMENU:
+		return 0;
+	case WM_COMMAND:
+
+		
+	}
 }
