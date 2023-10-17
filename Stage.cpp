@@ -4,6 +4,9 @@
 #include "Engine/Camera.h"
 #include "Engine/Fbx.h"
 #include "resource.h"
+#include <string>
+#include <ios>
+
 
 
 void Stage::SetBlock(int _x, int _z, BLOCKTYPE _type)
@@ -174,7 +177,67 @@ void Stage::Draw()
 		}
 	}
 }
+void Stage::Save()
+{
+	char fileName[MAX_PATH] = "無題.map";
+	std::string buffer;
+	std::stringstream oss;
 
+
+	//OPENFILENAME構造体を初期化
+	OPENFILENAME ofn; {
+		ZeroMemory(&ofn, sizeof(ofn));
+		ofn.lStructSize = sizeof(OPENFILENAME);
+		ofn.lpstrFilter = TEXT("マップデータ(*.map)\0*.map\0");
+		ofn.lpstrFile = fileName;
+		ofn.nMaxFile = MAX_PATH;
+		ofn.Flags = OFN_OVERWRITEPROMPT;
+		ofn.lpstrDefExt = TEXT("map");
+	}
+
+	//ファイルに保存
+	if (GetSaveFileName(&ofn)) {
+		std::fstream outputFile(fileName, std::ios::binary | std::ios::out);
+		for (int x = 0; x < XSIZE; x++) {
+			for (int z = 0; z < ZSIZE; z++) {
+				outputFile.write((char*)&table_[x][z], sizeof(BlockData));
+			}
+		}
+		outputFile.close();
+	}
+}
+
+void Stage::Load()
+{
+	char fileName[MAX_PATH] = "無題.map";
+	std::string buffer;
+	std::stringstream oss;
+
+	//OPENFILENAME構造体を初期化
+	OPENFILENAME ofn; {
+		ZeroMemory(&ofn, sizeof(ofn));
+		ofn.lStructSize = sizeof(OPENFILENAME);
+		ofn.lpstrFilter = TEXT("マップデータ(*.map)\0*.map\0");
+		ofn.lpstrFile = fileName;
+		ofn.nMaxFile = MAX_PATH;
+		ofn.Flags = OFN_FILEMUSTEXIST;
+		ofn.lpstrDefExt = TEXT("map");
+		ofn.lpstrDefExt;
+	}
+
+	//ファイルを開く
+	if (GetOpenFileName(&ofn)) {
+		std::fstream inputFile(fileName, std::ios::binary | std::ios::in);
+
+		for (int x = 0; x < XSIZE; x++) {
+			for (int z = 0; z < ZSIZE; z++) {
+				inputFile.read((char*)&table_[x][z], sizeof(BlockData));
+			}
+		}
+
+		inputFile.close();
+	}
+}
 //開放
 void Stage::Release()
 {
@@ -218,7 +281,11 @@ BOOL CALLBACK MENUProc(HWND hMenu, UINT msg, WPARAM wp, LPARAM lp)
 	case WM_INITMENU:
 		return 0;
 	case WM_COMMAND:
-
-		
+		switch (LOWORD(wp)) {
+		case ID_MENU_SAVE:
+			Save();
+			return 0;
+		}
 	}
 }
+
