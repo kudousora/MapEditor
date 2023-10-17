@@ -206,9 +206,6 @@ BOOL Stage::DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp)
 		return 0;
 	}
 	return FALSE;
-
-	
-
 }
 
 BOOL CALLBACK MENUProc(HWND hMenu, UINT msg, WPARAM wp, LPARAM lp)
@@ -218,7 +215,15 @@ BOOL CALLBACK MENUProc(HWND hMenu, UINT msg, WPARAM wp, LPARAM lp)
 	case WM_INITMENU:
 		return 0;
 	case WM_COMMAND:
-
-		
+		switch (wp) {
+		case ID_MENU_SAVE:
+			// セーブ処理を呼び出す
+			
+			return 0;
+		case ID_FILE_LOAD:
+			// ロード処理を呼び出す
+			Stage::LoadStage("save.dat");
+			return 0;
+		return 0;
 	}
 }

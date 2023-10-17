@@ -29,7 +29,7 @@ class Stage : public GameObject
     int comboID;    //コンボのIDを取得
     int notificationCode;//通知コードを取得
     int setComboID;     //コンボIDをセット
-
+    int control;
 public:
     void SetBlock(int _x, int _z, BLOCKTYPE _type);
     void SetBlockHeight(int _x, int _z, int _height);
