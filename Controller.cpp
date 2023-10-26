@@ -10,6 +10,7 @@ Controller::Controller(GameObject* parent)
     transform_.position_.z = 7.0f;
 
     transform_.rotate_.x = 45.0f;
+   
 }
 
 //デストラクタ
@@ -61,6 +62,7 @@ void Controller::Update()
 
 
     }
+
     //回転行列
     XMMATRIX mRotateX = XMMatrixRotationX(XMConvertToRadians(transform_.rotate_.x));
 
@@ -97,13 +99,29 @@ void Controller::Update()
         vPos -= rightMove;
     }
 
+    float cameraDistance = 5.0f; // カメラからオブジェクトまでの距離
+    // カメラ距離を調整
+    const float distanceChangeSpeed = 1.0f; // 距離を変更する速度
+    if (Input::IsKey(DIK_PGUP)) {
+        // Page Up キーを押すとカメラを近づける
+        cameraDistance -= distanceChangeSpeed;
+    }
+    else if (Input::IsKey(DIK_PGDN)) {
+        // Page Down キーを押すとカメラを遠ざける
+        cameraDistance += distanceChangeSpeed;
+    }
+
+    // カメラ距離が最小値未満にならないようにする
+    if (cameraDistance < minimumCameraDistance) {
+        cameraDistance = minimumCameraDistance;
+    }
     XMStoreFloat3(&transform_.position_, vPos);
 
-
+    
     //カメラ
-    XMVECTOR vCam = XMVectorSet(0, 0, -10, 0);     //自撮り棒用意
+    XMVECTOR vCam = XMVectorSet(0, 0, -cameraDistance, 0);     //自撮り棒用意
     vCam = XMVector3TransformCoord(vCam, mRotateX * mRotateY);  //自撮り棒回転
-    Camera::SetPosition(vPos + vCam);           //カメラの位置は自撮り棒の先端（現在地+自撮り棒）
+    Camera::SetPosition(vPos - (vCam* cameraDistance));           //カメラの位置は自撮り棒の先端（現在地+自撮り棒）
     Camera::SetTarget(transform_.position_);    //カメラの見る位置はこのオブジェクトの位置
 }
 

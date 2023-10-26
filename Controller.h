@@ -7,6 +7,7 @@
 //◆◆◆を管理するクラス
 class Controller : public GameObject
 {
+    float minimumCameraDistance; // 最小カメラ距離
 
 public:
     //コンストラクタ
