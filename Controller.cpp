@@ -122,8 +122,7 @@ void Controller::Update()
     XMVECTOR vCam = XMVectorSet(0, 0, cameraDistance, 0);     //自撮り棒用意
     vCam = XMVector3TransformCoord(vCam, mRotateX * mRotateY);  //自撮り棒回転
     Camera::SetPosition(vPos - (vCam* cameraDistance));           //カメラの位置は自撮り棒の先端（現在地+自撮り棒）
-    XMVECTOR vCameraPosition = XMVectorSubtract(XMLoadFloat3(&transform_.position_), XMVectorScale(vCam, cameraDistance));
-    Camera::SetPosition(vCameraPosition);
+   
     Camera::SetTarget(transform_.position_);    //カメラの見る位置はこのオブジェクトの位置
 }
 
