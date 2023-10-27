@@ -133,11 +133,16 @@ void Stage::Update()
 				else if (controlID == IDC_RADIO_DOWN) {
 					if (data.hit)
 					{
-						if (y > 0)
+						if (x == 0 || z == 0 || x == 14 || z == 14) {
+							// 外周のブロックの高さを増やす
+							table_[x][z].height++;
+							break;  // 高さを増やしたらループを抜けます
+						}
+						/*if (y > 0)
 						{
 							table_[x][z].height--;
 							break;
-						}
+						}*/
 
 					}
 				}
@@ -150,6 +155,21 @@ void Stage::Update()
 				
 			}
 
+		}
+	}
+	if (controlID == IDC_RADIO_encircle) {
+		if (Input::IsMouseButtonDown(0)) {
+			// マウスがクリックされた場合
+
+			// 外周のブロックを高さを増やす
+			for (int x = 0; x < 15; x++) {
+				for (int z = 0; z < 15; z++) {
+					// 外周のブロックの場合、高さを増やす
+					if (x == 0 || z == 0 || x == 14 || z == 14) {
+						table_[x][z].height++;
+					}
+				}
+			}
 		}
 	}
 }
