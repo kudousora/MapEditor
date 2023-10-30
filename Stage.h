@@ -30,6 +30,7 @@ class Stage : public GameObject
     int notificationCode;//通知コードを取得
     int setComboID;     //コンボIDをセット
     int control;
+    int BlockData;
 public:
     void SetBlock(int _x, int _z, BLOCKTYPE _type);
     void SetBlockHeight(int _x, int _z, int _height);
@@ -51,6 +52,8 @@ public:
     //開放
     void Release() override;
     BOOL DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp);
+  
+    BOOL MENUProc(HWND hMenu, UINT msg, WPARAM wp, LPARAM lp);
     void Save();
     void Load();
 };
