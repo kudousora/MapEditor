@@ -31,6 +31,10 @@ class Stage : public GameObject
     int setComboID;     //コンボIDをセット
     int control;
     int BlockData;
+    DWORD bytes;
+    BOOL selFile;
+    HANDLE hFile;
+    BOOL res;
 public:
     void SetBlock(int _x, int _z, BLOCKTYPE _type);
     void SetBlockHeight(int _x, int _z, int _height);

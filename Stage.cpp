@@ -8,6 +8,8 @@
 #include <ios>
 #include <sstream>
 #include <fstream>
+#include <iostream>
+#include <locale>
 
 
 
@@ -195,68 +197,198 @@ void Stage::Draw()
 		}
 	}
 }
+//void Stage::Save()
+//{
+//	char fileName[MAX_PATH] = "無題.map";
+//	std::string buffer;
+//	std::stringstream oss;
+//
+//
+//	//OPENFILENAME構造体を初期化
+//	OPENFILENAME ofn; {
+//		ZeroMemory(&ofn, sizeof(ofn));
+//		ofn.lStructSize = sizeof(OPENFILENAME);
+//		ofn.lpstrFilter = TEXT("マップデータ(*.map)\0*.map\0");
+//		ofn.lpstrFile = fileName;
+//		ofn.nMaxFile = MAX_PATH;
+//		ofn.Flags = OFN_OVERWRITEPROMPT;
+//		ofn.lpstrDefExt = TEXT("map");
+//	}
+//
+//	//ファイルに保存
+//	if (GetSaveFileName(&ofn)) {
+//		std::fstream outputFile(fileName, std::ios::binary | std::ios::out);
+//		for (int x = 0; x < XSIZE; x++) {
+//			for (int z = 0; z < ZSIZE; z++) {
+//				outputFile.write((char*)&table_[x][z], sizeof(BlockData));
+//			}
+//		}
+//		outputFile.close();
+//	}
+//}
+//
+//void Stage::Load()
+//{
+//	char fileName[MAX_PATH] = "無題.map";
+//	std::string buffer;
+//	std::stringstream oss;
+//
+//	//OPENFILENAME構造体を初期化
+//	OPENFILENAME ofn; {
+//		ZeroMemory(&ofn, sizeof(ofn));
+//		ofn.lStructSize = sizeof(OPENFILENAME);
+//		ofn.lpstrFilter = TEXT("マップデータ(*.map)\0*.map\0");
+//		ofn.lpstrFile = fileName;
+//		ofn.nMaxFile = MAX_PATH;
+//		ofn.Flags = OFN_FILEMUSTEXIST;
+//		ofn.lpstrDefExt = TEXT("map");
+//		ofn.lpstrDefExt;
+//	}
+//
+//	//ファイルを開く
+//	if (GetOpenFileName(&ofn)) {
+//		std::fstream inputFile(fileName, std::ios::binary | std::ios::in);
+//
+//		for (int x = 0; x < XSIZE; x++) {
+//			for (int z = 0; z < ZSIZE; z++) {
+//				inputFile.read((char*)&table_[x][z], sizeof(BlockData));
+//			}
+//		}
+//
+//		inputFile.close();
+//	}
+//}
 void Stage::Save()
 {
-	char fileName[MAX_PATH] = "無題.map";
-	std::string buffer;
-	std::stringstream oss;
+	char fileName[MAX_PATH] = "無題.map";  //ファイル名を入れる変数
+	//「ファイルを保存」ダイアログの設定
+	OPENFILENAME ofn;
 
+	// ダイアログボックスの初期化
+	ZeroMemory(&ofn, sizeof(ofn));
+	ofn.lStructSize = sizeof(OPENFILENAME);
+	ofn.lpstrFilter = "テキストファイル (*.txt)\0*.txt\0すべてのファイル (*.*)\0*.*\0";
+	ofn.lpstrFile = fileName;
+	ofn.nMaxFile = MAX_PATH;
+	ofn.Flags = OFN_OVERWRITEPROMPT;
 
-	//OPENFILENAME構造体を初期化
-	OPENFILENAME ofn; {
-		ZeroMemory(&ofn, sizeof(ofn));
-		ofn.lStructSize = sizeof(OPENFILENAME);
-		ofn.lpstrFilter = TEXT("マップデータ(*.map)\0*.map\0");
-		ofn.lpstrFile = fileName;
-		ofn.nMaxFile = MAX_PATH;
-		ofn.Flags = OFN_OVERWRITEPROMPT;
-		ofn.lpstrDefExt = TEXT("map");
-	}
+	// "ファイルを保存" ダイアログを表示
+	if (GetSaveFileName(&ofn) == TRUE)
+	{
+		// ファイルが正常に選択された場合
+		HANDLE hFile = CreateFile(
+			fileName,
+			GENERIC_WRITE,
+			0,
+			NULL,
+			CREATE_ALWAYS,
+			FILE_ATTRIBUTE_NORMAL,
+			NULL);
+		std::string data;
 
-	//ファイルに保存
-	if (GetSaveFileName(&ofn)) {
-		std::fstream outputFile(fileName, std::ios::binary | std::ios::out);
-		for (int x = 0; x < XSIZE; x++) {
-			for (int z = 0; z < ZSIZE; z++) {
-				outputFile.write((char*)&table_[x][z], sizeof(BlockData));
+		if (hFile != INVALID_HANDLE_VALUE)
+		{
+
+			// ファイルにデータを書き込む
+			for (int x = 0; x < XSIZE; x++)
+			{
+				for (int z = 0; z < ZSIZE; z++)
+				{
+					std::stringstream typeStream;
+					typeStream << table_[x][z].type;
+
+					std::stringstream heightStream;
+					heightStream << table_[x][z].height;
+
+					data += typeStream.str() + " " + heightStream.str() + "\n";
+				}
 			}
+
+			bytes = 0;
+			WriteFile(
+				hFile,
+				data.c_str(),
+				(DWORD)data.length(),
+				&bytes,
+				NULL);
+
+			CloseHandle(hFile);
 		}
-		outputFile.close();
 	}
 }
 
 void Stage::Load()
 {
-	char fileName[MAX_PATH] = "無題.map";
-	std::string buffer;
-	std::stringstream oss;
 
-	//OPENFILENAME構造体を初期化
-	OPENFILENAME ofn; {
-		ZeroMemory(&ofn, sizeof(ofn));
-		ofn.lStructSize = sizeof(OPENFILENAME);
-		ofn.lpstrFilter = TEXT("マップデータ(*.map)\0*.map\0");
-		ofn.lpstrFile = fileName;
-		ofn.nMaxFile = MAX_PATH;
-		ofn.Flags = OFN_FILEMUSTEXIST;
-		ofn.lpstrDefExt = TEXT("map");
-		ofn.lpstrDefExt;
+	char fileName[MAX_PATH] = "無題.map";  //ファイル名を入れる変数
+	//「ファイルを保存」ダイアログの設定
+	OPENFILENAME ofn;
+	ZeroMemory(&ofn, sizeof(ofn));
+	ofn.lStructSize = sizeof(OPENFILENAME);
+	ofn.lpstrFilter = TEXT("テキストファイル (*.txt)\0*.txt\0すべてのファイル (*.*)\0*.*\0");
+	ofn.lpstrFile = fileName;
+	ofn.nMaxFile = MAX_PATH;
+	ofn.Flags = OFN_FILEMUSTEXIST;
+
+	selFile = GetOpenFileName(&ofn);
+
+	if (selFile == FALSE)
+		return;
+
+	hFile = CreateFile(
+		fileName,
+		GENERIC_READ,
+		0,
+		NULL,
+		OPEN_EXISTING,
+		FILE_ATTRIBUTE_NORMAL,
+		NULL);
+
+	if (hFile == INVALID_HANDLE_VALUE)
+	{
+		std::wcout << L"ファイルオープンに失敗 " << GetLastError() << std::endl;
+		return;
 	}
 
-	//ファイルを開く
-	if (GetOpenFileName(&ofn)) {
-		std::fstream inputFile(fileName, std::ios::binary | std::ios::in);
+	DWORD fileSize = GetFileSize(hFile, NULL);
+	char* fileData = new char[fileSize];
+	bytes = 0;
+	res = ReadFile(
+		hFile,
+		fileData,
+		(DWORD)fileSize,
+		&bytes,
+		NULL);
 
-		for (int x = 0; x < XSIZE; x++) {
-			for (int z = 0; z < ZSIZE; z++) {
-				inputFile.read((char*)&table_[x][z], sizeof(BlockData));
+	if (res == FALSE)
+	{
+		std::wcout << L"ファイル読み込みに失敗" << GetLastError() << std::endl;
+		CloseHandle(hFile);
+		return;
+	}
+
+	for (int x = 0; x < XSIZE; x++)
+	{
+		for (int z = 0; z < ZSIZE; z++)
+		{
+			int type, height;
+			if (sscanf_s(fileData, "%d %d", &type, &height) == 2)
+			{
+				table_[x][z].type = type;
+				table_[x][z].height = height;
 			}
+
+			// 次のデータに進む
+			fileData = strchr(fileData, '\n');
+
+			if (fileData != nullptr)
+				++fileData; // 改行文字をスキップ
 		}
-
-		inputFile.close();
 	}
-}
 
+	CloseHandle(hFile);
+	std::string fileContent(fileData, fileSize);
+}
 //開放
 void Stage::Release()
 {
