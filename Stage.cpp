@@ -438,5 +438,6 @@ BOOL Stage::MENUProc(HWND hMenu, UINT msg, WPARAM wp, LPARAM lp)
 			return 0;
 		}
 	}
+	return 0;
 }
 
