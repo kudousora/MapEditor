@@ -15,14 +15,12 @@ namespace {
 //◆◆◆を管理するクラス
 class Stage : public GameObject
 {
+private:
+    
+
     int hModel_[MODEL_NUM];    //モデル番号
     //int table_[XSIZE][ZSIZE];
-    struct
-    {
-        int type;
-        int height;
-    } table_[15][15];
-
+   
     int mode_;      //0:上げる　1：下げる　2：種類を変える
     int select_;    //種類
     int controlID;  //コントロールのIDを取得
@@ -30,11 +28,8 @@ class Stage : public GameObject
     int notificationCode;//通知コードを取得
     int setComboID;     //コンボIDをセット
     int control;
-    int BlockData;
-    DWORD bytes;
-    BOOL selFile;
-    HANDLE hFile;
-    BOOL res;
+   
+   
 public:
     void SetBlock(int _x, int _z, BLOCKTYPE _type);
     void SetBlockHeight(int _x, int _z, int _height);
@@ -56,8 +51,9 @@ public:
     //開放
     void Release() override;
     BOOL DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp);
+    
   
-    BOOL MENUProc(HWND hMenu, UINT msg, WPARAM wp, LPARAM lp);
+   /* BOOL MENUProc(HWND hMenu, UINT msg, WPARAM wp, LPARAM lp);*/
     void Save();
     void Load();
 };

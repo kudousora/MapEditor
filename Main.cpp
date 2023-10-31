@@ -177,6 +177,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 //ウィンドウプロシージャ（何かあった時によばれる関数）
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
+	int a = 0;
 	switch (msg)
 	{
 	case WM_MOUSEMOVE:
@@ -185,6 +186,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	case WM_DESTROY:
 		PostQuitMessage(0);  //プログラム終了
 		return 0;
+	case WM_COMMAND:
+		switch (LOWORD(wParam)) {
+		case ID_MENU_NEW:
+			a++;
+			break;
+		case ID_MENU_OPEN:
+			a++;
+			((Stage*)pRootJob->FindObject("stage"))->Load();
+			return 0;
+		case ID_MENU_SAVE:
+			((Stage*)pRootJob->FindObject("stage"))->Save();
+			return 0;
+		}
+			
 	}
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }
@@ -195,8 +210,3 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp)
 	return pStage->DialogProc(hDlg, msg, wp, lp);
 }
 
-BOOL CALLBACK MENUProc(HWND hMenu, UINT msg, WPARAM wp, LPARAM lp)
-{
-	Stage* pStage = (Stage*)pRootJob->FindObject("Stage");
-	return pStage->MENUProc(hMenu, msg, wp, lp);
-}
